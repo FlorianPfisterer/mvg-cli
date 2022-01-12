@@ -29,12 +29,13 @@ def get_next_departures(args: Namespace):
         longest_name = departure['destination'] if len(departure['destination']) > len(longest_name) else longest_name
         valid_departures.append(departure)
 
-        
-
-    padding_length = len(longest_name) + 1
+    padding_length = len(longest_name) + 5
+    valid_departures = sorted(valid_departures, key=lambda d: d['departureTimeMinutes'])
     for departure in valid_departures: 
-        time = datetime.fromtimestamp(int(departure['departureTime']) / 1000).strftime('%H:%M:%S')
+        time = datetime.fromtimestamp(int(departure['departureTime']) / 1000).strftime('%H:%M')
         delay = departure['delay'] if 'delay' in departure else 0
         padding = ' ' * (padding_length - len(departure['destination']))
 
-        print(f"{departure['label']} to {departure['destination']}{padding}{time} +{delay} (in {departure['departureTimeMinutes']}min)")
+        time_mins = departure['departureTimeMinutes']
+        relative_description = f'in {time_mins} min' if time_mins >= 0 else 'now'
+        print(f"{departure['label']} to {departure['destination']}{padding}{time} +{delay} ({relative_description})")
