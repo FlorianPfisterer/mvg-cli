@@ -1,7 +1,9 @@
 from argparse import Namespace
 from datetime import datetime
 
+from mvgcli.command_line import style, CMDStyle
 from mvgcli.departures_request import DeparturesRequest
+from mvgcli.defaults import MIN_TO_STATION, get_defaults
 
 
 def _get_prefix(departure) -> str:
@@ -29,6 +31,7 @@ def print_next_departures(request: DeparturesRequest):
     padding_length = len(longest_prefix) + 5
     departures = sorted(departures, key=lambda d: d['departureTimeMinutes'])
 
+    defaults = get_defaults()
     for departure in departures: 
         time = datetime.fromtimestamp(int(departure['departureTime']) / 1000).strftime('%H:%M')
 
@@ -41,4 +44,17 @@ def print_next_departures(request: DeparturesRequest):
         time_mins = departure['departureTimeMinutes']
         relative_description = f'in {time_mins} min' if time_mins >= 0 else 'now'
 
-        print(f"{prefix}{padding}{time} {delay} ({relative_description})")
+        result = f"{prefix}{padding}{time} {delay} ({relative_description})"
+
+        if MIN_TO_STATION in defaults:
+            color = CMDStyle.GREEN
+            min_to_station = defaults[MIN_TO_STATION]
+
+            if time_mins < min_to_station:
+                color = CMDStyle.RED
+            elif time_mins == min_to_station:
+                color = CMDStyle.ORANGE
+
+            result = style(color, result)
+
+        print(result)

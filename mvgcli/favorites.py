@@ -1,12 +1,13 @@
-from json.decoder import JSONDecodeError
 import os
 import json
+from json.decoder import JSONDecodeError
 from argparse import Namespace
 from typing import Dict, Any, List
 from mvgcli.departures_request import DeparturesRequest
 from mvgcli.next_departures import print_next_departures
+from mvgcli.config import CONFIG_DIRECTORY, use_config_dir
 
-CONFIG_DIRECTORY = os.path.join(os.path.expanduser('~'), '.mvgcli')
+
 FAVORITES_FILE_PATH = os.path.join(CONFIG_DIRECTORY, 'favorites.json')
 
 
@@ -22,9 +23,7 @@ def _read_favorites() -> List[Dict[str, Any]]:
 
 
 def _write_favorites(favorites: List[Dict[str, Any]]):
-    if not os.path.isdir(CONFIG_DIRECTORY):
-        os.mkdir(CONFIG_DIRECTORY)
-
+    use_config_dir()
     with open(FAVORITES_FILE_PATH, 'w') as f:
         json.dump(favorites, f)
 

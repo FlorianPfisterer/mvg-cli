@@ -1,6 +1,7 @@
 import argparse
 from mvgcli.next_departures import get_next_departures
 from mvgcli.favorites import add_favorite, print_favorites, list_favorites, remove_favorite
+from mvgcli.defaults import update_defaults, MIN_TO_STATION
 
 parser = argparse.ArgumentParser(prog='mvg', description='Access live MVG data from your command line.')
 subparsers = parser.add_subparsers(title='sub-commands', description='available subcommands for settings')
@@ -35,11 +36,19 @@ remove_favorite_parser.add_argument('--index', '-i', metavar='i', type=int, narg
                                     help='the index of the favorite setting you want to remove')
 remove_favorite_parser.set_defaults(func=remove_favorite)
 
+defaults_parser = subparsers.add_parser('defaults')
+defaults_parser.add_argument('key', metavar='k', type=str, nargs='?', choices=[MIN_TO_STATION],
+                            help='which field of the default settings you want to edit')
+defaults_parser.add_argument('value', metavar='v', type=str, nargs='?',
+                            help='the value to which you want to set the given field')
+defaults_parser.set_defaults(func=update_defaults)
+
+
 def main():
     args = parser.parse_args()
     if hasattr(args, 'func'):
         args.func(args)
-    elif hasattr(args, 'from'):
+    elif hasattr(args, 'start_station') and args.start_station is not None:
         get_next_departures(args)
     else:
         print_favorites()
