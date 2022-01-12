@@ -1,6 +1,7 @@
 from argparse import Namespace
 from datetime import datetime
-from mvg_api import Station
+
+from mvgcli.departures_request import DeparturesRequest
 
 
 def _get_prefix(departure) -> str:
@@ -8,35 +9,29 @@ def _get_prefix(departure) -> str:
 
 
 def get_next_departures(args: Namespace):
-    station_name = args.start_station
-    station = Station(station_name)
+    print_next_departures(DeparturesRequest(args=args))
 
+
+def print_next_departures(request: DeparturesRequest):
+    station = request.get_station()
     if station is None:
-        print(f'Could not find station for query {station_name}.')
+        print(f'Could not find station for query {request.start_station_name}.')
         return
 
-    print(f'Upcoming departures from {station.name}\n')
+    to_filter = f' to {request.dest_station_filter}' if request.dest_station_filter is not None else ''
+    offset_filter = f' in {request.offset} min' if request.offset > 0 else ''
+    print(f'Upcoming departures from {station.name}{to_filter}{offset_filter}\n')
 
-    departures = station.get_departures(timeoffset=args.offset)
-    dest_station = args.dest_station if args.dest_station is not None else None
-
+    departures = request.get_departures()
     longest_prefix = ''
-    valid_departures = []
-    i = 0
-    while len(valid_departures) <= args.limit and i < len(departures):
-        departure = departures[i]
-        i += 1
-
-        if dest_station is not None and dest_station not in departure['destination']:
-            continue
- 
+    for departure in departures:
         prefix = _get_prefix(departure)
         longest_prefix = prefix if len(prefix) > len(longest_prefix) else longest_prefix
-        valid_departures.append(departure)
 
     padding_length = len(longest_prefix) + 5
-    valid_departures = sorted(valid_departures, key=lambda d: d['departureTimeMinutes'])
-    for departure in valid_departures: 
+    departures = sorted(departures, key=lambda d: d['departureTimeMinutes'])
+
+    for departure in departures: 
         time = datetime.fromtimestamp(int(departure['departureTime']) / 1000).strftime('%H:%M')
 
         delay = departure['delay'] if 'delay' in departure else 0
