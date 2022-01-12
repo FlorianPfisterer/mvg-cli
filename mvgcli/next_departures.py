@@ -18,9 +18,7 @@ def print_next_departures(request: DeparturesRequest):
         print(f'Could not find station for query {request.start_station_name}.')
         return
 
-    to_filter = f' to {request.dest_station_filter}' if request.dest_station_filter is not None else ''
-    offset_filter = f' in {request.offset} min' if request.offset > 0 else ''
-    print(f'Upcoming departures from {station.name}{to_filter}{offset_filter}\n')
+    print(f'Upcoming departures {request.get_description()}\n')
 
     departures = request.get_departures()
     longest_prefix = ''

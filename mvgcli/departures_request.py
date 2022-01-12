@@ -53,6 +53,12 @@ class DeparturesRequest:
 
         return valid_departures
 
+    def get_description(self) -> str:
+        station = self.get_station()
+        to_filter = f' to {self.dest_station_filter}' if self.dest_station_filter is not None else ''
+        offset_filter = f' in {self.offset} min' if self.offset > 0 else ''
+        return f'from {station.name}{to_filter}{offset_filter}'
+
     def get_dict(self) -> Dict[str, Any]:
         return {
             'start': self.start_station_name,

@@ -1,6 +1,6 @@
 import argparse
 from mvgcli.next_departures import get_next_departures
-from mvgcli.favorites import add_favorite, print_favorites
+from mvgcli.favorites import add_favorite, print_favorites, list_favorites, remove_favorite
 
 parser = argparse.ArgumentParser(prog='mvg', description='Access live MVG data from your command line.')
 subparsers = parser.add_subparsers(title='sub-commands', description='available subcommands for settings')
@@ -14,7 +14,7 @@ parser.add_argument('--offset', '-o', metavar='o', type=int, nargs='?', required
 parser.add_argument('--limit', '-l', metavar='l', type=int, nargs='?', required=False, dest='limit', default=5,
                     help='limit the number of results (upto approximately 25 can be returned), 5 by default')
 
-favorite_parser = subparsers.add_parser('favorite')
+favorite_parser = subparsers.add_parser('favorites')
 favorite_subparsers = favorite_parser.add_subparsers(title='favorite management commands')
 add_favorite_parser = favorite_subparsers.add_parser('add')
 add_favorite_parser.add_argument('--from', '-f', metavar='f', type=str, nargs='?', required=True, dest='start_station',
@@ -26,6 +26,14 @@ add_favorite_parser.add_argument('--offset', '-o', metavar='o', type=int, nargs=
 add_favorite_parser.add_argument('--limit', '-l', metavar='l', type=int, nargs='?', required=False, dest='limit', default=5,
                                  help='limit the number of results in the favorite (upto approximately 25 can be returned), 5 by default')
 add_favorite_parser.set_defaults(func=add_favorite)
+
+list_favorite_parser = favorite_subparsers.add_parser('list')
+list_favorite_parser.set_defaults(func=list_favorites)
+
+remove_favorite_parser = favorite_subparsers.add_parser('remove')
+remove_favorite_parser.add_argument('--index', '-i', metavar='i', type=int, nargs='?', required=True, dest='index',
+                                    help='the index of the favorite setting you want to remove')
+remove_favorite_parser.set_defaults(func=remove_favorite)
 
 def main():
     args = parser.parse_args()

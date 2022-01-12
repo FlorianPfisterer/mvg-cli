@@ -39,6 +39,18 @@ def print_favorites():
             print('\n')
 
 
+def list_favorites(_: Namespace):
+    favorites = _read_favorites()
+    if len(favorites) == 0:
+        print('You currently do not have any favorites. Add one using `mvg favorites add`.')
+    
+    max_num_width = len(str(len(favorites) - 1))
+    for (i, favorite) in enumerate(favorites):
+        request = DeparturesRequest(data_dict=favorite)
+        padding = ' ' * (max_num_width - len(str(i)))
+        print(f'{padding}{i}: {request.get_description()}')
+
+
 def add_favorite(args: Namespace):
     request = DeparturesRequest(args=args)
     station = request.get_station()
@@ -54,3 +66,21 @@ def add_favorite(args: Namespace):
 
     _write_favorites(favorites)
     print(f'Added setting to your favorites. You now have {len(favorites)} favorite(s) in total.')
+
+
+def remove_favorite(args: Namespace):
+    index = args.index
+    favorites = _read_favorites()
+
+    if len(favorites) == 0:
+        print('You currently do not have any favorites.')
+        return
+
+    if index >= len(favorites) or index < 0:
+        print(f'Index out of bounds. Please specify an index between 0 and {len(favorites) - 1}.')
+        return
+
+    favorites.pop(index)
+    _write_favorites(favorites)
+
+    print(f'Removed setting from your favorites. You now have {len(favorites)} favorite(s) in total.')
