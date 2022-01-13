@@ -1,3 +1,4 @@
 argparse
 mvg-api
 setuptools
+pathlib
