@@ -7,6 +7,9 @@ When I want to catch the train to go to university or to the city, I need to che
 
 Obviously, the only sensible solution is to create a CLI tool that makes it super convenient to get live data about upcoming departures right from the Terminal. And well, here we are.
 
+## Installation
+`pip install mvg-cli`
+
 ## Usage
 The basic idea is that you can define your favorite routes (start and destination stations) and then get the current departures by just typing `mvg` (just like in the screenshot at the top).
 In addition to managing your favorites, the CLI also allows manual querying.
