@@ -1,4 +1,1 @@
-argparse
-mvg-api
-setuptools
-pathlib
+mvg-api==1.2.7
