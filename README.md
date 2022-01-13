@@ -2,13 +2,13 @@
 A CLI tool for easy access to live MVG (Munich public transport) data from the command line.
 ![A screenshot of the Terminal where the `mvg` command is run](./example.png)
 
+## Installation
+`pip install mvg-cli`
+
 ## Why?
 When I want to catch the train to go to university or to the city, I need to check the upcoming departures with live delay data of the Munich metro at my local metro station. Using the MVG app or website is a bit cumbersome for this use case.
 
-Obviously, the only sensible solution is to create a CLI tool that makes it super convenient to get live data about upcoming departures right from the Terminal. And well, here we are.
-
-## Installation
-`pip install mvg-cli`
+Obviously, the only sensible solution is to create a CLI tool that makes it super convenient to get live data about upcoming departures right from the Terminal.
 
 ## Usage
 The basic idea is that you can define your favorite routes (start and destination stations) and then get the current departures by just typing `mvg` (just like in the screenshot at the top).
